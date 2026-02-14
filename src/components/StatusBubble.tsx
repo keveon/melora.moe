@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Activity } from 'lucide-react';
-import { cn } from '@lib/utils';
+import { cn } from '@/lib/utils';
 
 export function StatusBubble({ className }: { className?: string }) {
   const [status, setStatus] = useState('online');
@@ -10,8 +10,6 @@ export function StatusBubble({ className }: { className?: string }) {
 
   useEffect(() => {
     // Fetch status from Worker API
-    // Note: You need to deploy the worker first to get the URL
-    // For now we assume melora-brain.keveon.workers.dev
     fetch('https://melora-brain.keveon.workers.dev/status')
       .then((res) => res.json())
       .then((data) => {
