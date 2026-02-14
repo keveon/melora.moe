@@ -1,0 +1,7 @@
+name = "melora-brain"
+main = "./src/index.js"
+compatibility_date = "2025-02-13"
+
+[[kv_namespaces]]
+binding = "MELORA_STATUS"
+id = "16eaa20426c545eb8900183498a7a8cf"

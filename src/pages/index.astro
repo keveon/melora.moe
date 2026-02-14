@@ -1,64 +1,135 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ThemeToggle } from '@/components/ThemeToggle';
-import { StatusBubble } from '@/components/StatusBubble';
-import { BlurFade } from '@/components/BlurFade';
+import { StatusBubble } from '../components/StatusBubble';
+import { ThemeToggle } from '../components/ThemeToggle';
+import { BlurFade } from '../components/BlurFade';
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
 
-let meloraStatus = "unknown";
+const currentLocale = Astro.currentLocale ?? 'zh-CN';
 
-if (Astro.locals?.runtime?.env?.MELORA_STATUS) {
-  meloraStatus = Astro.locals.runtime.env.MELORA_STATUS;
-} else if (import.meta.env.MELORA_STATUS) {
-  meloraStatus = import.meta.env.MELORA_STATUS;
-}
+const t = {
+  'zh-CN': {
+    title: 'Melora - 个人主页',
+    greeting: '你好，我是 Melora',
+    subtitle: '开发者 / 创造者 / 梦想家',
+    description: '在这里探索我的作品与想法',
+    cta: '了解更多',
+  },
+  en: {
+    title: 'Melora - Personal Page',
+    greeting: 'Hi, I\'m Melora',
+    subtitle: 'Developer / Creator / Dreamer',
+    description: 'Explore my works and thoughts here',
+    cta: 'Learn More',
+  },
+};
+
+const content = t[currentLocale as keyof typeof t] ?? t['zh-CN'];
 ---
 
-<Layout title="Melora.moe">
-  <main class="container mx-auto p-4 flex min-h-screen items-center justify-center">
-    <BlurFade client:load>
-      <Card className="w-full max-w-md shadow-lg border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <div className="flex flex-col space-y-1">
-            <CardTitle>Melora.moe</CardTitle>
-            <CardDescription>Personal Hub</CardDescription>
-          </div>
-          <ThemeToggle client:load />
-        </CardHeader>
-        <CardContent className="grid gap-4">
-          <div className="flex items-center justify-between rounded-md border p-4 bg-muted/50">
-            <div className="flex items-center space-x-4">
-              <div className="space-y-1">
-                <p className="text-sm font-medium leading-none">System Status</p>
-                <p className="text-xs text-muted-foreground">Current operational status</p>
-              </div>
-            </div>
-            <StatusBubble status={meloraStatus} />
-          </div>
+<html lang={currentLocale}>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{content.title}</title>
+    <meta name="description" content={content.description} />
+  </head>
+  <body class="min-h-screen bg-background text-foreground antialiased">
+    <!-- Theme init script to prevent flash -->
+    <script is:inline>
+      const theme = localStorage.getItem('theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+    
+    <!-- Header -->
+    <header class="fixed top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-md">
+      <div class="container mx-auto flex h-16 items-center justify-between px-4">
+        <a href="/" class="text-xl font-bold tracking-tight">
+          Melora
+        </a>
+        <div class="flex items-center gap-4">
+          <!-- Status Bubble - fetched on client -->
+          <StatusBubble client:load />
           
-          <div className="flex flex-col space-y-3 pt-2">
-            <p className="text-sm font-medium text-muted-foreground">Quick Links</p>
-            <div className="flex gap-2 flex-wrap">
-              <Button variant="outline" size="sm" asChild className="gap-2">
-                <a href="https://github.com/keveon" target="_blank" rel="noreferrer">
-                  GitHub
-                </a>
-              </Button>
-              <Button variant="outline" size="sm" asChild className="gap-2">
-                <a href="https://twitter.com/keveon" target="_blank" rel="noreferrer">
-                  Twitter
-                </a>
-              </Button>
+          <!-- Theme Toggle -->
+          <ThemeToggle client:load />
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex min-h-screen items-center justify-center px-4 pt-16">
+      <div class="container mx-auto max-w-4xl">
+        <!-- Hero Section with BlurFade animations -->
+        <div class="flex flex-col items-center text-center space-y-8 py-20">
+          
+          <!-- Greeting -->
+          <BlurFade delay={0} client:load>
+            <h1 class="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+              {content.greeting}
+            </h1>
+          </BlurFade>
+          
+          <!-- Subtitle with Badges -->
+          <BlurFade delay={0.2} client:load>
+            <div class="flex flex-wrap items-center justify-center gap-2 text-lg text-muted-foreground sm:text-xl">
+              <Badge variant="secondary">开发者</Badge>
+              <span>/</span>
+              <Badge variant="secondary">创造者</Badge>
+              <span>/</span>
+              <Badge variant="secondary">梦想家</Badge>
             </div>
-          </div>
-        </CardContent>
-        <CardFooter className="flex justify-center border-t bg-muted/20 py-4">
-          <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} Keveon. All rights reserved.
-          </p>
-        </CardFooter>
-      </Card>
-    </BlurFade>
-  </main>
-</Layout>
+          </BlurFade>
+          
+          <!-- Description -->
+          <BlurFade delay={0.4} client:load>
+            <p class="max-w-lg text-muted-foreground">
+              {content.description}
+            </p>
+          </BlurFade>
+          
+          <!-- CTA Button -->
+          <BlurFade delay={0.6} client:load>
+            <Button asChild>
+              <a href="#">{content.cta}</a>
+            </Button>
+          </BlurFade>
+          
+          <!-- Decorative Element -->
+          <BlurFade delay={0.8} client:load>
+            <div class="mt-12 flex items-center gap-4 text-muted-foreground">
+              <div class="h-px w-12 bg-border"></div>
+              <span class="text-xs uppercase tracking-widest">Built with Astro + React</span>
+              <div class=\"h-px w-12 bg-border\"></div>
+            </div>
+          </BlurFade>
+          
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-border py-6">
+      <div class="container mx-auto px-4 text-center text-sm text-muted-foreground">
+        © {new Date().getFullYear()} Melora. All rights reserved.
+      </div>
+    </footer>
+  </body>
+</html>
+
+<script>
+  import '../styles/globals.css';
+</script>
+
+<script>
+  import { ThemeToggle } from '../components/ThemeToggle';
+  import { StatusBubble } from '../components/StatusBubble';
+  import { BlurFade } from '../components/BlurFade';
+  import { Button } from '../components/ui/button';
+  import { Badge } from '../components/ui/badge';
+</script>
