@@ -1,0 +1,64 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { StatusBubble } from '@/components/StatusBubble';
+import { BlurFade } from '@/components/BlurFade';
+
+let meloraStatus = "unknown";
+
+if (Astro.locals?.runtime?.env?.MELORA_STATUS) {
+  meloraStatus = Astro.locals.runtime.env.MELORA_STATUS;
+} else if (import.meta.env.MELORA_STATUS) {
+  meloraStatus = import.meta.env.MELORA_STATUS;
+}
+---
+
+<Layout title="Melora.moe">
+  <main class="container mx-auto p-4 flex min-h-screen items-center justify-center">
+    <BlurFade client:load>
+      <Card className="w-full max-w-md shadow-lg border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <div className="flex flex-col space-y-1">
+            <CardTitle>Melora.moe</CardTitle>
+            <CardDescription>Personal Hub</CardDescription>
+          </div>
+          <ThemeToggle client:load />
+        </CardHeader>
+        <CardContent className="grid gap-4">
+          <div className="flex items-center justify-between rounded-md border p-4 bg-muted/50">
+            <div className="flex items-center space-x-4">
+              <div className="space-y-1">
+                <p className="text-sm font-medium leading-none">System Status</p>
+                <p className="text-xs text-muted-foreground">Current operational status</p>
+              </div>
+            </div>
+            <StatusBubble status={meloraStatus} />
+          </div>
+          
+          <div className="flex flex-col space-y-3 pt-2">
+            <p className="text-sm font-medium text-muted-foreground">Quick Links</p>
+            <div className="flex gap-2 flex-wrap">
+              <Button variant="outline" size="sm" asChild className="gap-2">
+                <a href="https://github.com/keveon" target="_blank" rel="noreferrer">
+                  GitHub
+                </a>
+              </Button>
+              <Button variant="outline" size="sm" asChild className="gap-2">
+                <a href="https://twitter.com/keveon" target="_blank" rel="noreferrer">
+                  Twitter
+                </a>
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+        <CardFooter className="flex justify-center border-t bg-muted/20 py-4">
+          <p className="text-xs text-muted-foreground">
+            &copy; {new Date().getFullYear()} Keveon. All rights reserved.
+          </p>
+        </CardFooter>
+      </Card>
+    </BlurFade>
+  </main>
+</Layout>
